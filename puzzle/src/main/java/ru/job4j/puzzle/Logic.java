@@ -72,28 +72,20 @@ public class Logic {
         int[][] table = this.convert();
         boolean result = false;
         for (int row = 0; row < table.length; row++) {
-            int countInRow = 0, countInCol = 0;
-            for (int cell = 0; cell < table.length; cell++) {
-                if (table[row][cell] == 1) {
-                    countInRow++;
-                    countInCol++;
-                    while (row == 0 && countInCol < table.length) {
-                        if (table[countInCol][cell] == 1) {
-                            countInCol++;
-                        } else {
-                            break;
-                        }
+            if (table[row][row] == 1) {
+                int rowCount = 0;
+                int colCount = 0;
+                for (int cell = 0; cell < table.length; cell++) {
+                    if (table[row][cell] == 1) {
+                        rowCount++;
                     }
-                } else if (row != 0) {
-                    break;
+                    if (table[cell][row] == 1) {
+                        colCount++;
+                    }
                 }
-                if (countInRow == table.length || countInCol == table.length) {
+                if (rowCount == table.length || colCount == table.length) {
                     result = true;
-                    break;
                 }
-            }
-            if (result) {
-                break;
             }
         }
         return result;
