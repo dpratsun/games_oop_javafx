@@ -85,6 +85,7 @@ public class Logic {
                 }
                 if (rowCount == table.length || colCount == table.length) {
                     result = true;
+                    break;
                 }
             }
         }
