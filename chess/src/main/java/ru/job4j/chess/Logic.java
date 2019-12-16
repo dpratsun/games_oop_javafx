@@ -24,12 +24,9 @@ public class Logic {
     public boolean move(Cell source, Cell dest) {
         boolean rst = false;
         int index = this.findBy(source);
-        if (index != -1) {
-            Cell[] steps = this.figures[index].way(source, dest);
-            if (steps.length > 0 && steps[steps.length - 1].equals(dest)) {
-                rst = true;
-                this.figures[index] = this.figures[index].copy(dest);
-            }
+        if (index != -1 && isMakeMove(this.figures[index].way(source, dest), dest)) {
+            rst = true;
+            this.figures[index] = this.figures[index].copy(dest);
         }
         return rst;
     }
@@ -57,5 +54,28 @@ public class Logic {
         return "Logic{" +
                 "figures=" + Arrays.toString(this.figures) +
                 '}';
+    }
+
+    private boolean isFigureOnTheWay(Cell[] steps) {
+        boolean result = false;
+        for (Cell step: steps) {
+            if (this.findBy(step) > -1) {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+
+    private boolean isMakeMove(Cell[] steps, Cell dest) {
+        boolean result = true;
+        if (steps.length == 0) {
+            result = false;
+        } else if(!steps[steps.length - 1].equals(dest))  {
+            result = false;
+        } else if (isFigureOnTheWay(steps)) {
+            result = false;
+        }
+        return result;
     }
 }
