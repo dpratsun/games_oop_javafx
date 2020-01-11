@@ -1,5 +1,6 @@
 package job4j.tictactoe;
 
+import java.util.Arrays;
 import java.util.function.Predicate;
 
 public class Logic3T {
@@ -24,20 +25,51 @@ public class Logic3T {
     }
 
     public boolean isWinnerX() {
-        return this.fillBy(Figure3T::hasMarkX, 0, 0, 1, 0) ||
-                this.fillBy(Figure3T::hasMarkX, 0, 0, 0, 1) ||
-                this.fillBy(Figure3T::hasMarkX, 0,0, 1, 1) ||
-                this.fillBy(Figure3T::hasMarkX, this.table.length - 1 , 0, -1, 1);
+        return this.isWinner(Figure3T::hasMarkX);
     }
 
     public boolean isWinnerO() {
-        return this.fillBy(Figure3T::hasMarkO, 0, 0, 1, 0) ||
-                this.fillBy(Figure3T::hasMarkO, 0, 0, 0, 1) ||
-                this.fillBy(Figure3T::hasMarkO, 0,0, 1, 1) ||
-                this.fillBy(Figure3T::hasMarkO, this.table.length - 1, 0, -1, 1);
+        return this.isWinner(Figure3T::hasMarkO);
     }
 
     public boolean hasGap() {
-        return true;
+        return Arrays.stream(table)
+                .flatMap(Arrays::stream)
+                .anyMatch(f -> !f.hasMarkX() && !f.hasMarkO());
+    }
+
+    private boolean isWinner(Predicate<Figure3T> predicate) {
+        boolean result = false;
+        int diagonalCnt = 0;
+        int diagonalBackCnt = 0;
+        for (int row = 0; row < table.length; row++) {
+            if (predicate.test(table[table.length - 1 - row][row])) {
+                if (++diagonalBackCnt == table.length) {
+                    result = true;
+                    break;
+                }
+            }
+            if (predicate.test(table[row][row])) {
+                if (++diagonalCnt == table.length) {
+                    result = true;
+                    break;
+                }
+                int rowCount = 0;
+                int colCount = 0;
+                for (int cell = 0; cell < table.length; cell++) {
+                    if (predicate.test(table[row][cell])) {
+                        rowCount++;
+                    }
+                    if (predicate.test(table[cell][row])) {
+                        colCount++;
+                    }
+                }
+                if (rowCount == table.length || colCount == table.length) {
+                    result = true;
+                    break;
+                }
+            }
+        }
+        return result;
     }
 }
